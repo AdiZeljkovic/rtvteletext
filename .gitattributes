@@ -1,0 +1,8 @@
+# Teletekst stranice su generisani izlaz FAB sistema - cuvamo ih bajt-za-bajt.
+# Bez ovoga bi git konvertovao prelome redova i pravio lazne izmjene pri
+# svakom novom izvozu.
+* -text
+
+*.png binary
+*.gif binary
+*.gz  binary

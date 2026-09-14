@@ -1,0 +1,13 @@
+logo.gif
+
+frameset.htm:
+  - Title (between tags <title></title>).
+  - Top frame height (rows="100,*" in the first <frameset> tag).
+  - Left frame width (cols="209,*" in the second <frameset> tag).
+  - Text in the <noframes> part.
+
+topframe.htm, template.htm, template_top.htm:
+  - Contents of the <body> part.
+
+missing1.htm, missing2.htm:
+  - Text in the <body> part.

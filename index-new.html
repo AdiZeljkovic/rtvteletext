@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teletekst · RTVFBiH</title>
+<meta name="description" content="Teletekst Radiotelevizije Federacije BiH – vijesti, sport, TV program, vremenska prognoza i kursna lista.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="assets/tt.css">
+<script>
+	/* tema se postavlja prije prvog iscrtavanja da nema bljeska */
+	(function () {
+		try {
+			var t = localStorage.getItem("ttx-theme");
+			if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
+		} catch (e) {}
+	})();
+</script>
+</head>
+<body>
+
+<!-- ================================================== traka 1: glavni meni RTVFBiH -->
+<header class="sitebar">
+	<a class="sitebar__logo" href="https://rtvfbih.ba" target="_blank" rel="noopener" title="RTVFBiH">
+		<img src="images/frtlogo.gif" alt="RTVFBiH">
+	</a>
+
+	<nav class="sitenav" id="sitenav" aria-label="Glavni meni"></nav>
+
+	<button class="themetoggle" id="themeBtn" type="button" aria-label="Promijeni temu"></button>
+</header>
+
+<!-- ================================================ traka 2: navigacija teleteksta -->
+<div class="ttbar">
+	<nav class="nav" id="nav" aria-label="Sekcije teleteksta"></nav>
+
+	<form class="goto" id="gotoForm" autocomplete="off">
+		<input class="goto__input" id="gotoInput" type="text" inputmode="numeric"
+		       maxlength="7" placeholder="100" aria-label="Broj stranice teleteksta">
+		<button class="goto__btn" type="submit">Idi</button>
+	</form>
+</div>
+
+<!-- ============================================================================ ekran -->
+<main class="stage">
+
+	<div class="meta">
+		<span class="meta__page" id="pageNum">100.1</span>
+		<span class="meta__live">uživo</span>
+	</div>
+
+	<div class="screen" id="screen">
+		<div class="screen__inner" id="screenInner"></div>
+	</div>
+
+	<div class="pager">
+		<button class="pager__btn" id="prevBtn" type="button">
+			‹ <span>prethodna</span> <span class="pager__num" id="prevNum"></span>
+		</button>
+
+		<div class="subs" id="subs" hidden></div>
+
+		<button class="pager__btn" id="nextBtn" type="button">
+			<span class="pager__num" id="nextNum"></span> <span>slijedeća</span> ›
+		</button>
+	</div>
+
+	<p class="hint">
+		<kbd>0–9</kbd> broj stranice
+		<kbd>←</kbd><kbd>→</kbd> stranica
+		<kbd>↑</kbd><kbd>↓</kbd> podstranica
+		<kbd>Home</kbd> naslovnica
+	</p>
+
+</main>
+
+<!-- ========================================================================= podnozje -->
+<footer class="foot">
+	<span>© Radiotelevizija Federacije BiH</span>
+	<nav class="foot__links">
+		<a href="#406">Putevi</a>
+		<a href="#175">Kultura</a>
+		<a href="#190">Religija</a>
+		<a href="#493">Vodostaj</a>
+		<a href="#415">O teletekstu</a>
+		<a href="#443">Kontakt</a>
+		<a href="https://rtvfbih.ba" target="_blank" rel="noopener">rtvfbih.ba</a>
+	</nav>
+</footer>
+
+<div class="keybuf" id="keybuf">–––</div>
+
+<script src="assets/tt.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Serverski logovi - sadrze IP adrese posjetilaca, ne idu u repozitorij
+logs/
+
+# cPanel backup naloga (prazan) i status fajl FAB exportera
+backup/
+logfile.log
+
+# Alati i okruzenje
+.claude/
+__*.html
+
+# OS / editor
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*~
+.vscode/
+.idea/
