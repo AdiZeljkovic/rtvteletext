@@ -4,93 +4,201 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Teletekst · RTVFBiH</title>
-<meta name="description" content="Teletekst Radiotelevizije Federacije BiH – vijesti, sport, TV program, vremenska prognoza i kursna lista.">
+<meta name="description" content="Teletekst Federalne televizije – vijesti, sport, TV program, vremenska prognoza i kursna lista. Jedan od najstarijih teletekst servisa u regiji, od 1984.">
+<meta name="theme-color" content="#0b2540">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700&display=swap">
+<link rel="preload" href="assets/brand/kartice-bg.webp" as="image">
 <link rel="stylesheet" href="assets/tt.css">
-<script>
-	/* tema se postavlja prije prvog iscrtavanja da nema bljeska */
-	(function () {
-		try {
-			var t = localStorage.getItem("ttx-theme");
-			if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
-		} catch (e) {}
-	})();
-</script>
 </head>
 <body>
 
-<!-- ================================================== traka 1: glavni meni RTVFBiH -->
-<header class="sitebar">
-	<a class="sitebar__logo" href="https://rtvfbih.ba" target="_blank" rel="noopener" title="RTVFBiH">
-		<img src="images/frtlogo.gif" alt="RTVFBiH">
-	</a>
+<a class="skip" href="#ekran">Preskoči na teletekst</a>
 
-	<nav class="sitenav" id="sitenav" aria-label="Glavni meni"></nav>
+<!-- =========================================== zaglavlje (isto kao na rtvfbih.ba) -->
+<header class="site" id="site">
+	<div class="site__bar">
+		<div class="wrap site__row">
+			<a class="logo" id="logoLink" href="https://rtvfbih.ba/">
+				<span class="logo__znak">
+					<img class="logo__img logo__img--tamna" src="assets/brand/f25-logo.png" width="354" height="320" alt="">
+					<img class="logo__img logo__img--svijetla" src="assets/brand/f25-logo-svijetli.png" width="354" height="320" alt="">
+				</span>
+				<span class="logo__tekst">
+					<span>Radio-televizija</span>
+					<span>Federacije Bosne i Hercegovine</span>
+				</span>
+				<span class="sr-only">, početna stranica</span>
+			</a>
 
-	<button class="themetoggle" id="themeBtn" type="button" aria-label="Promijeni temu"></button>
+			<nav class="sitenav" aria-label="Glavna navigacija">
+				<ul class="sitenav__list" id="sitenav"></ul>
+			</nav>
+
+			<a class="btn site__cta" href="https://federalna.ba" target="_blank" rel="noopener" title="Vijesti na federalna.ba">
+				federalna.ba
+				<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+			</a>
+
+			<button class="menubtn" id="menuBtn" type="button" aria-expanded="false" aria-controls="mobilni-meni" aria-label="Otvori meni">
+				<svg class="ikona menubtn__otvori" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+				<svg class="ikona menubtn__zatvori" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+			</button>
+		</div>
+	</div>
+
+	<!-- mobilni meni – tamni panel kao na rtvfbih.ba -->
+	<div class="mmeni" id="mobilni-meni" aria-hidden="true" inert>
+		<div class="wrap mmeni__sadrzaj">
+			<ol class="mmeni__lista" id="mmeniLista"></ol>
+			<a class="mmeni__cta" href="https://federalna.ba" target="_blank" rel="noopener">
+				Vijesti na federalna.ba
+				<span><svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span>
+			</a>
+		</div>
+	</div>
 </header>
 
-<!-- ================================================ traka 2: navigacija teleteksta -->
-<div class="ttbar">
-	<nav class="nav" id="nav" aria-label="Sekcije teleteksta"></nav>
+<!-- ================================================================ teletekst -->
+<main class="hero" id="sadrzaj">
+	<div class="hero__pozadina" aria-hidden="true"></div>
 
-	<form class="goto" id="gotoForm" autocomplete="off">
-		<input class="goto__input" id="gotoInput" type="text" inputmode="numeric"
-		       maxlength="7" placeholder="100" aria-label="Broj stranice teleteksta">
-		<button class="goto__btn" type="submit">Idi</button>
-	</form>
-</div>
+	<div class="wrap hero__mreza">
 
-<!-- ============================================================================ ekran -->
-<main class="stage">
+		<!-- naslov -->
+		<div class="hero__naslov">
+			<nav class="mrvice" aria-label="Navigacija">
+				<a id="mrviceHome" href="https://rtvfbih.ba/">Početna</a>
+				<span aria-hidden="true">/</span>
+				<span class="mrvice__trenutna">Teletekst</span>
+			</nav>
+			<p class="eyebrow">Federalna televizija</p>
+			<h1>Teletekst <span class="istaknuto">uživo</span></h1>
+			<p class="hero__uvod">Vijesti, sport, TV program, vrijeme i kursna lista – jedan od najstarijih teletekst servisa u regiji, od 1984.</p>
+		</div>
 
-	<div class="meta">
-		<span class="meta__page" id="pageNum">100.1</span>
-		<span class="meta__live">uživo</span>
+		<!-- daljinski: unos broja i sekcije -->
+		<div class="daljinski">
+			<form class="idi" id="gotoForm" autocomplete="off">
+				<label class="idi__oznaka" for="gotoInput">Broj stranice</label>
+				<div class="idi__polje">
+					<input class="idi__unos" id="gotoInput" type="text" inputmode="numeric"
+					       maxlength="7" placeholder="100" aria-describedby="idiPomoc">
+					<button class="idi__dugme" type="submit">
+						Idi
+						<span class="idi__strelica"><svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+					</button>
+				</div>
+				<p class="idi__pomoc" id="idiPomoc">Npr. 301 ili 100.2 (stranica.podstranica)</p>
+			</form>
+
+			<nav class="sekcije" aria-label="Sekcije teleteksta">
+				<p class="sekcije__naslov">Sekcije</p>
+				<ul class="sekcije__lista" id="nav"></ul>
+			</nav>
+		</div>
+
+		<!-- ekran -->
+		<section class="tv" id="ekran" aria-label="Teletekst" tabindex="-1">
+			<div class="tv__meta">
+				<span class="tv__broj" id="pageNum">100.1</span>
+				<span class="tv__uzivo">Uživo</span>
+				<span class="tv__azurirano" id="updated"></span>
+			</div>
+
+			<div class="screen" id="screen">
+				<div class="screen__inner" id="screenInner" aria-live="polite"></div>
+			</div>
+
+			<div class="pager">
+				<button class="pager__btn" id="prevBtn" type="button">
+					<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+					<span class="pager__tekst">Prethodna</span> <span class="pager__num" id="prevNum"></span>
+				</button>
+
+				<div class="subs" id="subs" hidden></div>
+
+				<button class="pager__btn" id="nextBtn" type="button">
+					<span class="pager__num" id="nextNum"></span> <span class="pager__tekst">Sljedeća</span>
+					<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+				</button>
+			</div>
+		</section>
 	</div>
-
-	<div class="screen" id="screen">
-		<div class="screen__inner" id="screenInner"></div>
-	</div>
-
-	<div class="pager">
-		<button class="pager__btn" id="prevBtn" type="button">
-			‹ <span>prethodna</span> <span class="pager__num" id="prevNum"></span>
-		</button>
-
-		<div class="subs" id="subs" hidden></div>
-
-		<button class="pager__btn" id="nextBtn" type="button">
-			<span class="pager__num" id="nextNum"></span> <span>slijedeća</span> ›
-		</button>
-	</div>
-
-	<p class="hint">
-		<kbd>0–9</kbd> broj stranice
-		<kbd>←</kbd><kbd>→</kbd> stranica
-		<kbd>↑</kbd><kbd>↓</kbd> podstranica
-		<kbd>Home</kbd> naslovnica
-	</p>
-
+	<div class="hero__linija" aria-hidden="true"></div>
 </main>
 
-<!-- ========================================================================= podnozje -->
-<footer class="foot">
-	<span>© Radiotelevizija Federacije BiH</span>
-	<nav class="foot__links">
-		<a href="#406">Putevi</a>
-		<a href="#175">Kultura</a>
-		<a href="#190">Religija</a>
-		<a href="#493">Vodostaj</a>
-		<a href="#415">O teletekstu</a>
-		<a href="#443">Kontakt</a>
-		<a href="https://rtvfbih.ba" target="_blank" rel="noopener">rtvfbih.ba</a>
-	</nav>
+<!-- ================================================== još na teletekstu -->
+<section class="jos" aria-labelledby="josNaslov">
+	<div class="wrap">
+		<div class="jos__vrh">
+			<div>
+				<p class="eyebrow eyebrow--plava">Još na teletekstu</p>
+				<h2 id="josNaslov">Servisne informacije</h2>
+			</div>
+			<p class="tipke">
+				<kbd>0–9</kbd> broj stranice
+				<kbd>←</kbd><kbd>→</kbd> stranica
+				<kbd>↑</kbd><kbd>↓</kbd> podstranica
+				<kbd>Home</kbd> naslovnica
+			</p>
+		</div>
+		<ul class="kartice" id="brzo"></ul>
+	</div>
+</section>
+
+<!-- ================================================== podnožje (kao na rtvfbih.ba) -->
+<footer class="podnozje">
+	<div class="podnozje__linija" aria-hidden="true"></div>
+	<div class="wrap podnozje__mreza">
+		<div>
+			<span class="logo logo--podnozje">
+				<span class="logo__f" aria-hidden="true"></span>
+				<span class="logo__tekst">
+					<span>Radio-televizija</span>
+					<span>Federacije Bosne i Hercegovine</span>
+				</span>
+			</span>
+			<p class="podnozje__opis">Javni radio-televizijski servis Federacije Bosne i Hercegovine. Federalna televizija, Radio Federacije BiH, portal federalna.ba i Teletekst.</p>
+			<address class="podnozje__adresa">
+				<p>
+					<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+					<span>Bulevar Meše Selimovića 12<br>71000 Sarajevo, Bosna i Hercegovina</span>
+				</p>
+				<p>
+					<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg>
+					<a href="tel:+38733461101">+387 (0)33 461 101</a>
+				</p>
+				<p>
+					<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+					<a href="mailto:direkcija@rtvfbih.ba">direkcija@rtvfbih.ba</a>
+				</p>
+			</address>
+			<div class="drustvene">
+				<a href="https://www.youtube.com/@federalnatv" target="_blank" rel="noopener" aria-label="YouTube">
+					<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
+				</a>
+				<a href="https://www.facebook.com/federalna.ba" target="_blank" rel="noopener" aria-label="Facebook">
+					<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg>
+				</a>
+				<a href="https://www.instagram.com/federalna.ba" target="_blank" rel="noopener" aria-label="Instagram">
+					<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+				</a>
+			</div>
+		</div>
+		<!-- kolone linkova pravi tt.js iz FOOTER_NAV -->
+		<div class="podnozje__kolone" id="podnozjeKolone"></div>
+	</div>
+	<div class="podnozje__dno">
+		<div class="wrap">
+			<p>© <span id="godina">2026</span> Radio-televizija Federacije Bosne i Hercegovine. Sva prava zadržana.</p>
+			<p>Preuzimanje sadržaja sa stranice samo uz pismenu dozvolu ili navođenje izvora (www.rtvfbih.ba).</p>
+		</div>
+	</div>
 </footer>
 
-<div class="keybuf" id="keybuf">–––</div>
+<div class="keybuf" id="keybuf" aria-hidden="true">–––</div>
 
 <script src="assets/tt.js"></script>
 </body>

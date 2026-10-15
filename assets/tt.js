@@ -19,50 +19,76 @@
 
 	/*
 	 * ----------------------------------------------------------------------
-	 * GLAVNI MENI RTVFBiH
+	 * MENI I PODNOŽJE – preslikani sa nove stranice rtvfbih.ba
 	 * ----------------------------------------------------------------------
-	 * Preslikan sa redizajna rtvfbih.ba. Trenutni produkcijski rtvfbih.ba jos
-	 * uvijek vrti stari sajt, pa PUTANJE NISU POTVRDJENE - zamijeniti "url"
-	 * vrijednosti pravima kad redizajn ode uzivo.
-	 * Stavke koje imaju "items" dobivaju padajuci izbornik.
-	 * Stavke sa "page" vode na stranicu teleteksta (te su provjerene i zive).
+	 * Izvor je src/content/site.ts u projektu nove stranice (mainNav, footerNav).
+	 * Ako se tamo nešto promijeni, uskladiti i ovdje. Sve putanje su relativne
+	 * na SITE – ako nova stranica ode na drugu adresu, mijenja se samo SITE.
 	 */
+	var SITE = "https://rtvfbih.ba";
+
 	var SITE_NAV = [
-		{ label: "Naslovnica", url: "https://rtvfbih.ba/" },
-		{ label: "FTV",        url: "https://www.federalna.ba/" },
-		{ label: "TV Program", url: "https://rtvfbih.ba/tv-program" },
-		{ label: "Radio FBiH", url: "https://rtvfbih.ba/radio", items: [
-			{ label: "O Radiju FBiH", url: "https://rtvfbih.ba/radio" },
-			{ label: "Program",       url: "https://rtvfbih.ba/radio/program" },
-			{ label: "Frekvencije",   url: "https://rtvfbih.ba/radio/frekvencije" },
-			{ label: "Slušaj uživo",  url: "https://rtvfbih.ba/radio/uzivo" }
+		{ label: "O nama", href: "/o-nama", children: [
+			{ label: "Historijat", href: "/o-nama", description: "Od transformacije RTVBiH do danas" },
+			{ label: "Upravni odbor", href: "/o-nama/upravni-odbor", description: "Članovi i akti Upravnog odbora" },
+			{ label: "Organizacija i uredništva", href: "/o-nama/organizacija", description: "Sektori, odjeli i redakcije" }
 		]},
-		{ label: "Opće informacije", url: "https://rtvfbih.ba/o-nama", items: [
-			{ label: "O RTVFBiH",           url: "https://rtvfbih.ba/o-nama" },
-			{ label: "Organizacija",        url: "https://rtvfbih.ba/organizacija" },
-			{ label: "Dokumenti i propisi", url: "https://rtvfbih.ba/dokumenti" },
-			{ label: "Kontakt",             url: "https://rtvfbih.ba/kontakt" }
+		{ label: "Televizija", href: "/televizija", children: [
+			{ label: "Federalna televizija", href: "/televizija", description: "Programske cjeline i programska shema" },
+			{ label: "Emisije i serije", href: "/televizija/emisije", description: "Emisije, serije i arhiva" },
+			{ label: "DVB-T2 prijem", href: "/frekvencije/dvb-t2", description: "Zemaljska digitalna televizija" }
 		]},
-		{ label: "Marketing", url: "https://rtvfbih.ba/marketing", items: [
-			/* ove tri vode na stvarne, zive stranice teleteksta */
-			{ label: "Cjenovnik oglašavanja",   page: 410 },
-			{ label: "Cjenovnik teleteksta",    page: 415 },
-			{ label: "Politički subjekti",      page: 416 },
-			{ label: "Kontakt marketing",       url: "https://rtvfbih.ba/marketing" }
+		{ label: "Radio", href: "/radio" },
+		{ label: "Dokumenti", href: "/dokumenti", children: [
+			{ label: "Opći akti i izvještaji", href: "/dokumenti", description: "Zakoni, statut, pravilnici, revizije" },
+			{ label: "Javne nabavke", href: "/javne-nabavke", description: "Planovi, obavještenja i odluke" },
+			{ label: "Obavijesti i konkursi", href: "/obavijesti", description: "Javni konkursi i oglasi" }
 		]},
-		{ label: "Javne nabavke", url: "https://rtvfbih.ba/javne-nabavke" },
-		{ label: "Teletekst", page: 100, active: true }
+		{ label: "Frekvencije", href: "/frekvencije" },
+		{ label: "Marketing", href: "/marketing" },
+		{ label: "Kontakt", href: "/kontakt" }
+	];
+
+	/* "page" vodi na stranicu teleteksta, "url" je vanjska adresa, "href" je putanja na SITE */
+	var FOOTER_NAV = [
+		[
+			{ title: "Servisi", items: [
+				{ label: "Federalna televizija", href: "/televizija" },
+				{ label: "Radio Federacije BiH", href: "/radio" },
+				{ label: "Emisije i serije", href: "/televizija/emisije" },
+				{ label: "Portal federalna.ba", url: "https://federalna.ba" },
+				{ label: "Teletekst", page: 100 },
+				{ label: "Radio uživo", url: "https://s2.free-shoutcast.com/stream/18170" }
+			]}
+		],
+		[
+			{ title: "Institucija", items: [
+				{ label: "Historijat", href: "/o-nama" },
+				{ label: "Upravni odbor", href: "/o-nama/upravni-odbor" },
+				{ label: "Organizacija", href: "/o-nama/organizacija" },
+				{ label: "Opći akti i izvještaji", href: "/dokumenti" },
+				{ label: "Javne nabavke", href: "/javne-nabavke" }
+			]}
+		],
+		[
+			{ title: "Za građane", items: [
+				{ label: "Frekvencije i prijem", href: "/frekvencije" },
+				{ label: "Marketing i oglašavanje", href: "/marketing" },
+				{ label: "Obavijesti i konkursi", href: "/obavijesti" },
+				{ label: "Kontakt", href: "/kontakt" }
+			]},
+			{ title: "Javni RTV sistem BiH", items: [
+				{ label: "BHRT", url: "https://www.bhrt.ba" },
+				{ label: "RTRS", url: "https://www.rtrs.tv" }
+			]}
+		]
 	];
 
 	/*
-	 * Sekcije i brzi linkovi. Stari top.htm / bottomframe.htm su vodili na gomilu
+	 * Sekcije teleteksta. Stari top.htm / bottomframe.htm su vodili na gomilu
 	 * stranica koje su u meduvremenu ugasene (Williams, Lutrija, SMS chat, Mozzart,
 	 * Usamljena srca, Stampa...) - ovdje su zadrzane samo stranice koje stvarno
 	 * imaju sadrzaj u trenutnom exportu.
-	 */
-	/*
-	 * Osam stavki - taman toliko da centrirana grupa ne naleti na polje za unos
-	 * na uobicajenim rezolucijama. Ostale zive sekcije su u podnozju.
 	 */
 	var SECTIONS = [
 		{ label: "Naslovnica",   page: 100 },
@@ -73,6 +99,19 @@
 		{ label: "Vrijeme",      page: 400 },
 		{ label: "Horoskop",     page: 480 },
 		{ label: "Kursna lista", page: 499 }
+	];
+
+	/*
+	 * Kartice ispod ekrana – ostale žive servisne stranice (opisi prema sadržaju stranica).
+	 * Vodostaj (493) namjerno nije ovdje: FAB ga ne osvježava, u exportu su podaci iz 2021.
+	 */
+	var BRZO = [
+		{ label: "Stanje na putevima", opis: "Prohodnost puteva i dispečerski centar", page: 406 },
+		{ label: "Temperature u BiH", opis: "Izmjerene temperature po gradovima", page: 403 },
+		{ label: "Kultura", opis: "Vijesti iz kulture, nauke i umjetnosti", page: 175 },
+		{ label: "Religija", opis: "Vijesti iz vjerskih zajednica", page: 190 },
+		{ label: "Oglašavanje", opis: "Cjenovnik marketinških usluga teleteksta", page: 415 },
+		{ label: "Redakcija teleteksta", opis: "Adresa i kontakt redakcije", page: 443 }
 	];
 
 
@@ -240,6 +279,8 @@
 				hs.rel = "noopener noreferrer";
 				hs.title = a.href;
 			}
+			/* link bez teksta – čitač ekrana inače ne zna kuda vodi */
+			hs.setAttribute("aria-label", hs.title);
 			el.inner.appendChild(hs);
 		});
 	}
@@ -249,8 +290,18 @@
 		box.className = "empty";
 		box.innerHTML =
 			'<div class="empty__code">' + state.page + "</div>" +
-			'<div class="empty__text">' + message + "</div>";
+			'<div class="empty__text">' + message + "</div>" +
+			(state.page !== HOME ? '<a class="empty__link" href="#' + HOME + '">Naslovnica teleteksta</a>' : "");
 		el.inner.appendChild(box);
+	}
+
+	/* "Ažurirano 14:32" (danas) ili "Ažurirano 12. 9. u 14:32" – iz Last-Modified zaglavlja */
+	function renderUpdated(lastMod) {
+		var d = lastMod ? new Date(lastMod) : null;
+		if (!d || isNaN(d.getTime())) { el.updated.textContent = ""; return; }
+		var sat = d.toLocaleTimeString("bs-BA", { hour: "2-digit", minute: "2-digit" });
+		var danas = new Date().toDateString() === d.toDateString();
+		el.updated.textContent = "Ažurirano " + (danas ? sat : d.getDate() + ". " + (d.getMonth() + 1) + ". u " + sat);
 	}
 
 	/* strelice + padajuci izbornik, za stranice s puno podstranica */
@@ -317,8 +368,11 @@
 		el.nextNum.textContent = state.next || "";
 
 		/* aktivna sekcija */
-		Array.prototype.forEach.call(el.nav.children, function (item) {
-			item.classList.toggle("is-active", Number(item.dataset.page) === state.page);
+		Array.prototype.forEach.call(el.nav.querySelectorAll(".sekcija"), function (a) {
+			var aktivna = Number(a.dataset.page) === state.page;
+			a.classList.toggle("is-active", aktivna);
+			if (aktivna) a.setAttribute("aria-current", "page");
+			else a.removeAttribute("aria-current");
 		});
 	}
 
@@ -343,9 +397,11 @@
 			var data = extract(r.doc, r.url);
 			render(data);
 			renderChrome(data);
+			renderUpdated(data.img ? r.lastMod : null);
 			document.title = page + "." + sub + " · Teletekst FTV";
 		}).catch(function () {
 			state.lastMod = null;
+			renderUpdated(null);
 			el.screen.classList.remove("is-loading");
 			el.inner.innerHTML = "";
 			renderEmpty("Stranica ne postoji.");
@@ -364,6 +420,18 @@
 	function onHashChange() {
 		var t = readHash();
 		load(t.page, t.sub);
+		pokaziEkran();
+	}
+
+	/*
+	 * Na mobitelu su sekcije i kartice ispod ekrana – nakon izbora stranice
+	 * ekran se vrati u vidno polje (ako već nije vidljiv).
+	 */
+	function pokaziEkran() {
+		var r = el.tv.getBoundingClientRect();
+		if (r.top < 0 || r.top > window.innerHeight * 0.5) {
+			el.tv.scrollIntoView({ block: "start" });
+		}
 	}
 
 	/* --------------------------------------------- auto-osvjezavanje sadrzaja */
@@ -461,162 +529,158 @@
 
 	/* ------------------------------------------------------------- izgradnja */
 
+	var IKONA_DOLJE = '<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+	var IKONA_DESNO = '<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+	function esc(s) {
+		return String(s).replace(/[&<>"]/g, function (c) {
+			return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+		});
+	}
+
+	/* adresa stavke: stranica teleteksta, vanjski URL ili putanja na novoj stranici */
+	function adresa(s) {
+		if (s.page) return "#" + s.page;
+		if (s.url) return s.url;
+		return SITE + s.href;
+	}
+	function vanjska(s) {
+		return s.url ? ' target="_blank" rel="noopener"' : "";
+	}
+
+	/* sekcije teleteksta (pilule / dvije kolone) */
 	function buildNav() {
-		SECTIONS.forEach(function (s) {
-			var a = document.createElement("a");
-			a.className = "nav__item";
-			a.href = "#" + s.page;
-			a.dataset.page = s.page;
-			a.title = "Stranica " + s.page;
-
-			var label = document.createElement("span");
-			label.textContent = s.label;
-			a.appendChild(label);
-
-			/* broj stranice uz naziv - korisno i vizuelno odvaja ovaj meni od glavnog */
-			var num = document.createElement("span");
-			num.className = "nav__num";
-			num.textContent = s.page;
-			a.appendChild(num);
-
-			el.nav.appendChild(a);
-		});
+		el.nav.innerHTML = SECTIONS.map(function (s) {
+			return '<li><a class="sekcija" href="#' + s.page + '" data-page="' + s.page + '">' +
+				"<span>" + esc(s.label) + "</span>" +
+				'<span class="sekcija__broj">' + s.page + "</span></a></li>";
+		}).join("");
 	}
 
-	var CARET = '<svg class="sitenav__caret" viewBox="0 0 12 12" fill="none" aria-hidden="true">' +
-	            '<path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" ' +
-	            'stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
-	/* glavni meni RTVFBiH, s padajucim izbornicima */
+	/* glavni meni – desktop (padajući izbornici rade na hover i fokus, bez JS-a) */
 	function buildSiteNav() {
-		SITE_NAV.forEach(function (entry) {
-			var group = document.createElement("div");
-			group.className = "sitenav__group" + (entry.active ? " is-active" : "");
-
-			var link = document.createElement(entry.items ? "button" : "a");
-			link.className = "sitenav__link";
-			link.textContent = entry.label;
-
-			if (entry.items) {
-				link.type = "button";
-				link.setAttribute("aria-expanded", "false");
-				link.insertAdjacentHTML("beforeend", CARET);
-				var menu = buildSiteMenu(entry.items);
-				link.onclick = function (e) {
-					e.stopPropagation();
-					var open = group.classList.contains("is-open");
-					closeMenus();
-					if (!open) {
-						group.classList.add("is-open");
-						link.setAttribute("aria-expanded", "true");
-						menu.hidden = false;
-					}
-				};
-				group.appendChild(link);
-				group.appendChild(menu);
-			} else {
-				applyTarget(link, entry);
-				group.appendChild(link);
+		el.sitenav.innerHTML = SITE_NAV.map(function (item) {
+			if (!item.children) {
+				return '<li class="sitenav__item"><a class="sitenav__link" href="' + adresa(item) + '">' + esc(item.label) + "</a></li>";
 			}
-
-			el.sitenav.appendChild(group);
-		});
-
-		document.addEventListener("click", closeMenus);
-		document.addEventListener("keydown", function (e) {
-			if (e.key === "Escape") closeMenus();
-		});
+			return '<li class="sitenav__item">' +
+				'<a class="sitenav__link" href="' + adresa(item) + '" aria-haspopup="true">' + esc(item.label) + IKONA_DOLJE + "</a>" +
+				'<div class="sitenav__podmeni"><ul>' +
+				item.children.map(function (c) {
+					return '<li><a href="' + adresa(c) + '"><strong>' + esc(c.label) + "</strong>" +
+						(c.description ? "<small>" + esc(c.description) + "</small>" : "") + "</a></li>";
+				}).join("") +
+				"</ul></div></li>";
+		}).join("");
 	}
 
-	function buildSiteMenu(items) {
-		var menu = document.createElement("div");
-		menu.className = "sitenav__menu";
-		menu.hidden = true;
-		items.forEach(function (it) {
-			var a = document.createElement("a");
-			a.className = "sitenav__item";
-			a.textContent = it.label;
-			applyTarget(a, it);
-			menu.appendChild(a);
-		});
-		return menu;
-	}
+	/* glavni meni – mobitel (numerisane stavke, podmeniji se otvaraju na klik) */
+	function buildMobileNav() {
+		el.mmeni.innerHTML = SITE_NAV.map(function (item, i) {
+			var broj = '<span class="mmeni__broj">' + String(i + 1).padStart(2, "0") + "</span>";
+			if (!item.children) {
+				return '<li><a class="mmeni__red" href="' + adresa(item) + '">' + broj +
+					'<span class="mmeni__naziv">' + esc(item.label) + "</span></a></li>";
+			}
+			var id = "mpod-" + i;
+			return '<li><button class="mmeni__red" type="button" aria-expanded="false" aria-controls="' + id + '">' + broj +
+				'<span class="mmeni__naziv">' + esc(item.label) + '</span><span class="mmeni__strelica">' + IKONA_DOLJE + "</span></button>" +
+				'<ul class="mmeni__pod" id="' + id + '" hidden>' +
+				item.children.map(function (c) {
+					return '<li><a href="' + adresa(c) + '"><strong>' + esc(c.label) + "</strong>" +
+						(c.description ? "<small>" + esc(c.description) + "</small>" : "") + "</a></li>";
+				}).join("") +
+				"</ul></li>";
+		}).join("");
 
-	/* stavka vodi ili na stranicu teleteksta (#NNN) ili na vanjski URL */
-	function applyTarget(node, entry) {
-		if (entry.page) {
-			node.href = "#" + entry.page;
-			node.title = "Stranica " + entry.page;
-		} else {
-			node.href = entry.url || "#";
-			node.target = "_blank";
-			node.rel = "noopener noreferrer";
-		}
-	}
-
-	function closeMenus() {
-		Array.prototype.forEach.call(el.sitenav.children, function (g) {
-			g.classList.remove("is-open");
-			var btn = g.querySelector(".sitenav__link");
-			var menu = g.querySelector(".sitenav__menu");
-			if (btn && btn.tagName === "BUTTON") btn.setAttribute("aria-expanded", "false");
-			if (menu) menu.hidden = true;
+		el.mmeni.addEventListener("click", function (e) {
+			var btn = e.target.closest("button.mmeni__red");
+			if (!btn) return;
+			var otvoren = btn.getAttribute("aria-expanded") === "true";
+			btn.setAttribute("aria-expanded", String(!otvoren));
+			document.getElementById(btn.getAttribute("aria-controls")).hidden = otvoren;
 		});
 	}
 
-	/* ----------------------------------------------------------------- tema */
-
-	var ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
-	               'stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/>' +
-	               '<path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.2 5.2l1.4 1.4M17.4 17.4l1.4 1.4' +
-	               'M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4"/></svg>';
-
-	var ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
-	                'stroke-linejoin="round"><path d="M20 13.4A8.2 8.2 0 1 1 10.6 4a6.6 6.6 0 0 0 9.4 9.4Z"/></svg>';
-
-	function currentTheme() {
-		if (document.documentElement.dataset.theme) return document.documentElement.dataset.theme;
-		return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+	function postaviMeni(otvoren) {
+		el.site.classList.toggle("is-open", otvoren);
+		el.menuBtn.setAttribute("aria-expanded", String(otvoren));
+		el.menuBtn.setAttribute("aria-label", otvoren ? "Zatvori meni" : "Otvori meni");
+		el.mmeniPanel.setAttribute("aria-hidden", String(!otvoren));
+		el.mmeniPanel.inert = !otvoren;
+		/* dok je meni otvoren, stranica ispod se ne skrola */
+		document.documentElement.style.overflow = otvoren ? "hidden" : "";
+		azurirajZaglavlje();
 	}
 
-	/*
-	 * persist = true samo kad korisnik sam prebaci temu. Da smo pamtili i pri
-	 * prvom ucitavanju, izbor bi se "zakljucao" i stranica vise ne bi pratila
-	 * sistemsku postavku.
-	 */
-	function setTheme(theme, persist) {
-		document.documentElement.dataset.theme = theme;
-		if (persist) {
-			try { localStorage.setItem("ttx-theme", theme); } catch (e) {}
-		}
-		el.themeBtn.innerHTML = theme === "dark" ? ICON_SUN : ICON_MOON;
-		el.themeBtn.title = theme === "dark" ? "Svijetla tema" : "Tamna tema";
+	/* zaglavlje: prozirno preko tamnog uvoda, bijelo nakon skrolanja (kao na rtvfbih.ba) */
+	function azurirajZaglavlje() {
+		var solid = window.scrollY > 24 && !el.site.classList.contains("is-open");
+		el.site.classList.toggle("is-solid", solid);
 	}
 
-	function initTheme() {
-		setTheme(currentTheme(), false);
-		el.themeBtn.onclick = function () {
-			setTheme(currentTheme() === "dark" ? "light" : "dark", true);
-		};
+	function buildFooter() {
+		el.kolone.innerHTML = FOOTER_NAV.map(function (kolona) {
+			return "<div>" + kolona.map(function (grupa) {
+				return '<div class="podnozje__kolona"><h3>' + esc(grupa.title) + "</h3><ul>" +
+					grupa.items.map(function (s) {
+						return '<li><a href="' + adresa(s) + '"' + vanjska(s) + (s.page ? ' aria-current="page"' : "") + ">" + esc(s.label) + "</a></li>";
+					}).join("") +
+					"</ul></div>";
+			}).join("") + "</div>";
+		}).join("");
+	}
+
+	function buildBrzo() {
+		el.brzo.innerHTML = BRZO.map(function (s) {
+			return '<li><a class="kartica" href="#' + s.page + '">' +
+				'<span class="kartica__broj">' + s.page + "</span>" +
+				'<span class="kartica__tekst"><strong>' + esc(s.label) + "</strong><small>" + esc(s.opis) + "</small></span>" +
+				IKONA_DESNO + "</a></li>";
+		}).join("");
 	}
 
 	function init() {
-		el.nav      = document.getElementById("nav");
+		el.site     = document.getElementById("site");
 		el.sitenav  = document.getElementById("sitenav");
-		el.themeBtn = document.getElementById("themeBtn");
-		el.screen  = document.getElementById("screen");
-		el.inner   = document.getElementById("screenInner");
-		el.subs    = document.getElementById("subs");
-		el.prev    = document.getElementById("prevBtn");
-		el.next    = document.getElementById("nextBtn");
-		el.prevNum = document.getElementById("prevNum");
-		el.nextNum = document.getElementById("nextNum");
-		el.pageNum = document.getElementById("pageNum");
-		el.keybuf  = document.getElementById("keybuf");
+		el.menuBtn  = document.getElementById("menuBtn");
+		el.mmeni    = document.getElementById("mmeniLista");
+		el.mmeniPanel = document.getElementById("mobilni-meni");
+		el.nav      = document.getElementById("nav");
+		el.tv       = document.getElementById("ekran");
+		el.screen   = document.getElementById("screen");
+		el.inner    = document.getElementById("screenInner");
+		el.subs     = document.getElementById("subs");
+		el.prev     = document.getElementById("prevBtn");
+		el.next     = document.getElementById("nextBtn");
+		el.prevNum  = document.getElementById("prevNum");
+		el.nextNum  = document.getElementById("nextNum");
+		el.pageNum  = document.getElementById("pageNum");
+		el.updated  = document.getElementById("updated");
+		el.keybuf   = document.getElementById("keybuf");
+		el.kolone   = document.getElementById("podnozjeKolone");
+		el.brzo     = document.getElementById("brzo");
+
+		/* logo i mrvice vode na naslovnicu nove stranice */
+		document.getElementById("logoLink").href = SITE + "/";
+		document.getElementById("mrviceHome").href = SITE + "/";
+		document.getElementById("godina").textContent = new Date().getFullYear();
 
 		buildSiteNav();
+		buildMobileNav();
 		buildNav();
-		initTheme();
+		buildFooter();
+		buildBrzo();
+
+		el.menuBtn.onclick = function () { postaviMeni(!el.site.classList.contains("is-open")); };
+		el.mmeniPanel.addEventListener("click", function (e) {
+			if (e.target.closest("a")) postaviMeni(false);
+		});
+		window.addEventListener("scroll", azurirajZaglavlje, { passive: true });
+		window.matchMedia("(min-width: 1280px)").addEventListener("change", function (m) {
+			if (m.matches) postaviMeni(false);
+		});
+		azurirajZaglavlje();
 
 		el.prev.onclick = function () { if (state.prev) go(state.prev, 1); };
 		el.next.onclick = function () { if (state.next) go(state.next, 1); };
@@ -631,9 +695,18 @@
 		};
 
 		window.addEventListener("hashchange", onHashChange);
-		document.addEventListener("keydown", onKey);
+		document.addEventListener("keydown", function (e) {
+			if (e.key === "Escape" && el.site.classList.contains("is-open")) {
+				postaviMeni(false);
+				el.menuBtn.focus();
+				return;
+			}
+			onKey(e);
+		});
 
-		onHashChange();
+		/* prvo učitavanje – bez skrolanja do ekrana */
+		var t = readHash();
+		load(t.page, t.sub);
 	}
 
 	if (document.readyState === "loading") {

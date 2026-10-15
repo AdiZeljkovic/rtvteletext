@@ -43,11 +43,32 @@ nema koraka izgradnje ni sinkronizacije.
 
 ```
 index-new.html      novi front
-assets/tt.css       dizajn (svijetla i tamna tema)
-assets/tt.js        čitanje FAB exporta, navigacija, teme
-images/             logotipi i grafika
+assets/tt.css       dizajn (u stilu nove stranice rtvfbih.ba)
+assets/tt.js        čitanje FAB exporta, navigacija, meni i podnožje
+assets/brand/       logo F25, znak „F“ i pozadinska tekstura (sa rtvfbih.ba)
+images/             grafika starog frameseta
 100/ … 800/         teletekst stranice: PPP_SSSS.htm + .png
 ```
+
+### Dizajn
+
+Izgled je preslikan sa nove stranice rtvfbih.ba (projekat `nova stranica/rtvfbih`):
+ista paleta (navy `#0B2540`, plava `#2B8DDE`, nebo `#87C6DD`), fontovi Montserrat i
+Inter, zaglavlje s logom F25 i istim menijem, tamni uvod s teksturom i tamno
+podnožje. Samo svijetla tema, kao na stranici.
+
+Meni i podnožje su u `SITE_NAV` i `FOOTER_NAV` na vrhu [`assets/tt.js`](assets/tt.js),
+preslikani iz `src/content/site.ts` nove stranice. Sve putanje idu na `SITE`
+(`https://rtvfbih.ba`) – ako nova stranica ode na drugu adresu, mijenja se samo ta
+jedna vrijednost. Kartice „Servisne informacije“ su u `BRZO`.
+
+### Objava (FTP)
+
+Na server teletext.rtvfbih.ba se šalju samo `index-new.html` i cijeli folder
+`assets/`. Teletekst stranice (`100/` … `800/`) i dalje piše FAB sistem i ne diraju se.
+Front mora biti na istoj domeni kao FAB fajlovi (čita ih preko `fetch()`).
+Dok se ne odluči drugačije, stari frameset ostaje na `index.html`; novi front se
+uključuje preimenovanjem `index-new.html` u `index.html` (stari sačuvati kao kopiju).
 
 Folder odgovara stotini: `100/` drži stranice 100–199, `200/` stranice 200–299
 itd. Ime fajla je `PPP_SSSS` — broj stranice i podstranica (`100_0002.htm` je
@@ -61,9 +82,12 @@ Stari frameset (`index.htm`, `frameset.htm`, `top.htm`, `bottomframe.htm`,
 - Deep-linking preko hash rute — `#301`, `#100.2`
 - Tastatura: `0–9` broj stranice, `←→` stranica, `↑↓` podstranica, `Home`
 - Klikabilni brojevi unutar teleteksta (iz originalne image mape)
-- Svijetla i tamna tema; prati sistemsku postavku dok korisnik sam ne prebaci
-- Automatsko osvježavanje aktivne stranice svakih 60 s, preko `Last-Modified`
-- Responzivno, bez horizontalnog scrolla na telefonu
+- Automatsko osvježavanje aktivne stranice svakih 60 s, preko `Last-Modified`;
+  iznad ekrana piše kad je stranica zadnji put ažurirana
+- Responzivno, bez horizontalnog scrolla (provjereno do 320 px); na telefonu je
+  ekran odmah ispod naslova, a izbor sekcije vraća ekran u vidno polje
+- Pristupačnost: klikabilni brojevi imaju `aria-label`, link „Preskoči na
+  teletekst“, meni radi tastaturom, poštuje se `prefers-reduced-motion`
 
 ---
 
@@ -79,11 +103,13 @@ trake: Williams, BET-live, Lutrija BiH, BET-SHOP, Derby, Millennium, Formula,
 SMS chat, Mali oglasi, Usamljena srca, Kulinarstvo, Sanovnik, Štampa. Navigacija
 u novom frontu vodi samo na stranice koje su žive.
 
+Stranica 493 (Vodostaj) postoji, ali FAB je ne osvježava – u exportu su podaci
+od 8. 4. 2021. Zato nije među karticama.
+
 ## Što treba dovršiti
 
-Glavni meni je preslikan sa redizajna rtvfbih.ba, ali **putanje nisu potvrđene** —
-produkcijski rtvfbih.ba još uvijek vrti stari sajt. Zamijeniti `url` vrijednosti
-u `SITE_NAV` na vrhu [`assets/tt.js`](assets/tt.js) kad redizajn ode uživo.
+Linkovi menija vode na putanje nove stranice rtvfbih.ba. Dok nova stranica ne ode
+uživo na `SITE`, ti linkovi na produkciji vode na stari sajt.
 
 ## Napomene
 
