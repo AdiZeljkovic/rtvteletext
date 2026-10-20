@@ -628,12 +628,16 @@ button { font: inherit; color: inherit; }
 
 /* --------------------------------------------------------------- ekran */
 
+/* uvijek jedan red iste visine – i kad „Ažurirano…“ nema – da se ekran i dugmad ispod ne pomjeraju */
 .tv__meta {
 	display: flex;
+	flex-wrap: nowrap;
 	align-items: center;
 	gap: .75rem;
+	height: 1.75rem;
 	margin-bottom: .875rem;
 	font-size: .8rem;
+	white-space: nowrap;
 }
 
 .tv__broj {
@@ -672,7 +676,7 @@ button { font: inherit; color: inherit; }
 	100% { box-shadow: 0 0 0 0 rgb(255 107 107 / 0); }
 }
 
-.tv__azurirano { margin-left: auto; color: rgb(255 255 255 / .55); }
+.tv__azurirano { min-width: 0; margin-left: auto; overflow: hidden; text-overflow: ellipsis; color: rgb(255 255 255 / .55); }
 
 /* kućište kao TV prijemnik; ekran se suzi da sve ostane u vidnom polju */
 .screen {
@@ -763,19 +767,26 @@ button { font: inherit; color: inherit; }
 
 /* ---------------------------------------------------------------- pager */
 
+/*
+ * „Prethodna“ i „Sljedeća“ su jedno do drugog, centrirani, fiksne širine – ne pomjeraju se
+ * kad se broj stranice u dugmetu promijeni ili nestane, pa se može klikati na istom mjestu.
+ * Podstranice (kad ih ima) su u svom redu ispod, da ne guraju dugmad.
+ */
 .pager {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
+	display: grid;
+	grid-template-columns: auto auto;
 	justify-content: center;
-	gap: .625rem;
+	gap: .75rem .625rem;
 	width: min(100%, max(30rem, calc((100svh - 17rem) * 1.4286)));
 	margin-top: 1.125rem;
 }
+.pager > .subs { grid-column: 1 / -1; grid-row: 2; justify-self: center; }
 
 .pager__btn {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
+	width: 10.75rem;    /* stane „‹ Prethodna 999“ */
 	gap: .5rem;
 	padding: .5rem 1rem;
 	border-radius: 999px;
@@ -1012,7 +1023,7 @@ kbd {
 
 @media (max-width: 639px) {
 	.pager__tekst { display: none; }
-	.pager__btn { padding: .5rem .75rem; }
+	.pager__btn { width: 6rem; padding: .5rem .75rem; }   /* stane „‹ 999“ */
 	.screen { padding: .5rem; border-radius: 1rem; }
 	.screen__inner { border-radius: .375rem; }
 	.hero h1 { font-size: 2.25rem; }

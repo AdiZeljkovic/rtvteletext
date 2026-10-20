@@ -10,7 +10,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700&display=swap">
 <link rel="preload" href="assets/brand/kartice-bg.webp" as="image">
-<link rel="stylesheet" href="assets/tt.css">
+<!-- ?v= povećati pri svakoj objavi izmjena, da preglednici ne koriste stari fajl iz keša -->
+<link rel="stylesheet" href="assets/tt.css?v=2026-10-21">
 </head>
 <body>
 
@@ -112,14 +113,14 @@
 			</div>
 
 			<div class="pager">
-				<button class="pager__btn" id="prevBtn" type="button">
+				<button class="pager__btn pager__btn--prev" id="prevBtn" type="button">
 					<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
 					<span class="pager__tekst">Prethodna</span> <span class="pager__num" id="prevNum"></span>
 				</button>
 
 				<div class="subs" id="subs" hidden></div>
 
-				<button class="pager__btn" id="nextBtn" type="button">
+				<button class="pager__btn pager__btn--next" id="nextBtn" type="button">
 					<span class="pager__num" id="nextNum"></span> <span class="pager__tekst">Sljedeća</span>
 					<svg class="ikona" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
 				</button>
@@ -200,6 +201,6 @@
 
 <div class="keybuf" id="keybuf" aria-hidden="true">–––</div>
 
-<script src="assets/tt.js"></script>
+<script src="assets/tt.js?v=2026-10-21"></script>
 </body>
 </html>

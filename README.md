@@ -67,6 +67,8 @@ jedna vrijednost. Kartice „Servisne informacije“ su u `BRZO`.
 Na server teletext.rtvfbih.ba se šalju samo `index-new.html` i cijeli folder
 `assets/`. Teletekst stranice (`100/` … `800/`) i dalje piše FAB sistem i ne diraju se.
 Front mora biti na istoj domeni kao FAB fajlovi (čita ih preko `fetch()`).
+Pri svakoj objavi izmjena u `assets/` promijeniti `?v=` uz `tt.css` i `tt.js` u
+`index-new.html` (npr. na datum objave) – inače posjetioci mogu dobiti stari fajl iz keša.
 Dok se ne odluči drugačije, stari frameset ostaje na `index.html`; novi front se
 uključuje preimenovanjem `index-new.html` u `index.html` (stari sačuvati kao kopiju).
 
