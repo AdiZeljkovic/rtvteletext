@@ -884,9 +884,8 @@ kbd {
 	font-weight: 600;
 }
 
-.kartice { display: grid; gap: 1.25rem; margin-top: 2rem; }
-@media (min-width: 640px)  { .kartice { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 1024px) { .kartice { grid-template-columns: repeat(3, 1fr); } }
+/* koliko kartica stane (min. 18rem), pa i dvije kartice popune red bez praznog mjesta */
+.kartice { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); gap: 1.25rem; margin-top: 2rem; }
 
 .kartica {
 	display: flex;

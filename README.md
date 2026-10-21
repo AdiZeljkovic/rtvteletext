@@ -86,6 +86,10 @@ Stari frameset (`index.htm`, `frameset.htm`, `top.htm`, `bottomframe.htm`,
 - Klikabilni brojevi unutar teleteksta (iz originalne image mape)
 - Automatsko osvježavanje aktivne stranice svakih 60 s, preko `Last-Modified`;
   iznad ekrana piše kad je stranica zadnji put ažurirana
+- FAB prepisuje fajlove na mjestu, pa je stranica kratko prazna (0 B) ili bez slike.
+  Front tada pokuša ponovo (3 puta u ~5 s) prije poruke, osvježavanje nikad ne zamijeni
+  prikazanu stranicu praznom, a prazna stranica se provjerava svakih 15 s i prikaže se
+  čim sadržaj stigne (`POKUSAJI_MS`, `PRAZNA_MS` u `tt.js`)
 - Responzivno, bez horizontalnog scrolla (provjereno do 320 px); na telefonu je
   ekran odmah ispod naslova, a izbor sekcije vraća ekran u vidno polje
 - Pristupačnost: klikabilni brojevi imaju `aria-label`, link „Preskoči na

@@ -18,6 +18,14 @@
 	var REFRESH_MS = 60000;
 
 	/*
+	 * FAB pri svakom izvozu prepisuje fajlove na mjestu: kratko je fajl prazan ili nedovršen.
+	 * Ko ga tada otvori, dobije stranicu bez slike – zato se prije poruke pokuša ponovo
+	 * (pauze u ms), a prazna stranica se provjerava češće dok sadržaj ne stigne.
+	 */
+	var POKUSAJI_MS = [700, 1500, 3000];
+	var PRAZNA_MS = 15000;
+
+	/*
 	 * ----------------------------------------------------------------------
 	 * MENI I PODNOŽJE – preslikani sa nove stranice rtvfbih.ba
 	 * ----------------------------------------------------------------------
@@ -89,6 +97,8 @@
 	 * stranica koje su u meduvremenu ugasene (Williams, Lutrija, SMS chat, Mozzart,
 	 * Usamljena srca, Stampa...) - ovdje su zadrzane samo stranice koje stvarno
 	 * imaju sadrzaj u trenutnom exportu.
+	 * Horoskop (480) i Kursna lista (499) sklonjeni na zahtjev klijenta (stranice i dalje
+	 * rade upisom broja).
 	 */
 	var SECTIONS = [
 		{ label: "Naslovnica",   page: 100 },
@@ -96,22 +106,17 @@
 		{ label: "Svijet",       page: 120 },
 		{ label: "Sport",        page: 200 },
 		{ label: "TV program",   page: 300 },
-		{ label: "Vrijeme",      page: 400 },
-		{ label: "Horoskop",     page: 480 },
-		{ label: "Kursna lista", page: 499 }
+		{ label: "Vrijeme",      page: 400 }
 	];
 
 	/*
 	 * Kartice ispod ekrana – ostale žive servisne stranice (opisi prema sadržaju stranica).
 	 * Vodostaj (493) namjerno nije ovdje: FAB ga ne osvježava, u exportu su podaci iz 2021.
+	 * Kultura (175), Religija (190), Oglašavanje (415) i Redakcija (443) sklonjeni na zahtjev klijenta.
 	 */
 	var BRZO = [
 		{ label: "Stanje na putevima", opis: "Prohodnost puteva i dispečerski centar", page: 406 },
-		{ label: "Temperature u BiH", opis: "Izmjerene temperature po gradovima", page: 403 },
-		{ label: "Kultura", opis: "Vijesti iz kulture, nauke i umjetnosti", page: 175 },
-		{ label: "Religija", opis: "Vijesti iz vjerskih zajednica", page: 190 },
-		{ label: "Oglašavanje", opis: "Cjenovnik marketinških usluga teleteksta", page: 415 },
-		{ label: "Redakcija teleteksta", opis: "Adresa i kontakt redakcije", page: 443 }
+		{ label: "Temperature u BiH", opis: "Izmjerene temperature po gradovima", page: 403 }
 	];
 
 
@@ -126,7 +131,11 @@
 		lastMod: null,
 		keybuf: "",
 		keyTimer: null,
-		pollTimer: null
+		pollTimer: null,
+		/* broj zadnjeg učitavanja – odgovor za stranicu s koje je korisnik već otišao se zanemaruje */
+		zahtjev: 0,
+		/* na ekranu je stvarna stranica (slika) – osvježavanje je ne mijenja praznom */
+		prikazano: false
 	};
 
 	var el = {};
@@ -249,15 +258,23 @@
 		if (!data || !data.img) {
 			renderEmpty(!data || data.missing
 				? "Ova stranica teleteksta trenutno nije u emitiranju."
-				: "Stranica je prazna.");
+				: "Stranica se upravo ažurira. Sadržaj će se prikazati čim bude spreman.");
 			return;
 		}
 
 		var img = document.createElement("img");
 		img.className = "screen__img";
 		/* cache-buster vezan za Last-Modified: slika se osvjezi samo kad se stvarno promijeni */
-		img.src = data.img + (state.lastMod ? "?v=" + encodeURIComponent(state.lastMod) : "");
+		var src = data.img + (state.lastMod ? "?v=" + encodeURIComponent(state.lastMod) : "");
+		img.src = src;
 		img.alt = data.alt || ("Teletekst stranica " + state.page);
+		/* slika uhvaćena dok je FAB piše može biti neispravna – učitaj je još jednom */
+		img.onerror = function () {
+			img.onerror = null;
+			setTimeout(function () {
+				img.src = src + (src.indexOf("?") < 0 ? "?" : "&") + "r=" + Date.now();
+			}, 1500);
+		};
 		el.inner.appendChild(img);
 
 		/* hotspotovi - koordinate iz 480x336 pretvorene u postotke pa se skaliraju */
@@ -387,28 +404,56 @@
 		else location.hash = hash;
 	}
 
-	function load(page, sub) {
+	/* tiho = automatsko osvježavanje iste stranice (bez zatamnjenja, ne briše prikazani sadržaj) */
+	function load(page, sub, tiho) {
+		var id = ++state.zahtjev;
 		state.page = page;
 		state.sub = sub;
-		el.screen.classList.add("is-loading");
+		clearTimeout(state.pollTimer);
+		if (!tiho) el.screen.classList.add("is-loading");
+		ucitaj(page, sub, id, 0, tiho);
+	}
 
+	function ucitaj(page, sub, id, pokusaj, tiho) {
 		fetchPage(page, sub).then(function (r) {
-			state.lastMod = r.lastMod;
+			if (id !== state.zahtjev) return;
 			var data = extract(r.doc, r.url);
+
+			if (!data.img && !data.missing) {
+				/* prazan ili nedovršen fajl – FAB ga vjerovatno upravo piše: pokušaj ponovo
+				   (ne kod provjere stranice koja je već prazna – ona se ionako ponavlja svakih 15 s) */
+				var najvise = tiho && !state.prikazano ? 0 : POKUSAJI_MS.length;
+				if (pokusaj < najvise) {
+					setTimeout(function () {
+						if (id === state.zahtjev) ucitaj(page, sub, id, pokusaj + 1, tiho);
+					}, POKUSAJI_MS[pokusaj]);
+					return;
+				}
+				/* i dalje prazno: kod osvježavanja ostaje posljednja dobra verzija */
+				if (tiho && state.prikazano) { schedulePoll(PRAZNA_MS); return; }
+			}
+
+			/* za praznu stranicu bez Last-Modified, da je sljedeća provjera sigurno ponovo učita */
+			state.lastMod = data.img ? r.lastMod : null;
+			state.prikazano = Boolean(data.img);
 			render(data);
 			renderChrome(data);
 			renderUpdated(data.img ? r.lastMod : null);
 			document.title = page + "." + sub + " · Teletekst FTV";
+			schedulePoll(data.img || data.missing ? REFRESH_MS : PRAZNA_MS);
 		}).catch(function () {
+			if (id !== state.zahtjev) return;
+			/* privremena greška mreže pri osvježavanju: ne briši prikazanu stranicu */
+			if (tiho && state.prikazano) { schedulePoll(); return; }
 			state.lastMod = null;
+			state.prikazano = false;
 			renderUpdated(null);
 			el.screen.classList.remove("is-loading");
 			el.inner.innerHTML = "";
 			renderEmpty("Stranica ne postoji.");
 			renderChrome(null);
+			schedulePoll();
 		});
-
-		schedulePoll();
 	}
 
 	function readHash() {
@@ -440,9 +485,9 @@
 	 * FAB sistem stalno prepisuje stranice (vijesti, kvote, program). HEAD zahtjev
 	 * je jeftin - ako se Last-Modified promijenio, ponovo ucitaj stranicu.
 	 */
-	function schedulePoll() {
+	function schedulePoll(ms) {
 		clearTimeout(state.pollTimer);
-		state.pollTimer = setTimeout(poll, REFRESH_MS);
+		state.pollTimer = setTimeout(poll, ms || REFRESH_MS);
 	}
 
 	function poll() {
@@ -452,12 +497,12 @@
 			.then(function (res) {
 				var lm = res.headers.get("Last-Modified");
 				if (res.ok && lm && lm !== state.lastMod && page === state.page && sub === state.sub) {
-					load(page, sub);
+					load(page, sub, true);
 				} else {
-					schedulePoll();
+					schedulePoll(state.prikazano ? REFRESH_MS : PRAZNA_MS);
 				}
 			})
-			.catch(schedulePoll);
+			.catch(function () { schedulePoll(); });
 	}
 
 	/* ---------------------------------------------------------- tipkovnica */
